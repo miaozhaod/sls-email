@@ -67,6 +67,8 @@ functions:
       - httpApi:
           path: /send-email
           method: post
+    environment:
+      SENDGRID_API_KEY: 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
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
