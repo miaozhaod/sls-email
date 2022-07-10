@@ -1,18 +1,60 @@
-'use strict';
+"use strict";
+const nodemailer = require("nodemailer");
 
-module.exports.sendEmail = async (event) => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(
-      {
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        input: event,
+const headers = {
+  "content-type": "application/json",
+};
+
+module.exports.sendEmail = async event => {
+  try {
+    console.log(event);
+
+    // const requestBody = event.body;
+    // const { to, subject, text, html } = requestBody;
+    // if (!to || !subject || !text || !html) {
+    //   return {
+    //     statusCode: 400,
+    //     headers,
+    //     body: JSON.stringify({
+    //       message: "Function rejected due to incomplete request.",
+    //     }),
+    //   };
+    // }
+
+    let transporter = nodemailer.createTransport({
+      host: "smtp.sendgrid.net",
+      port: 465,
+      secure: true,
+      auth: {
+        user: "apikey",
+        pass: process.env.SENDGRID_API_KEY,
       },
-      null,
-      2
-    ),
-  };
+    });
 
-  // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-  // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
+    await transporter.sendMail({
+      from: '"A-COMOSUS 🍍" <project.a.comosus@gmail.com>',
+      // ...requestBody,
+      to: "miao_zhao@yahoo.com",
+      subject: "Hello ✔",
+      text: "Hello world?",
+      html: "<b>Hello world?</b>",
+    });
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        message: `Function completed with requested behaviour.`,
+      }),
+    };
+  } catch (err) {
+    console.log("err!", err);
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({
+        message: `Function errored when processing this request.`,
+      }),
+    };
+  }
 };
